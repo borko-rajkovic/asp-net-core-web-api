@@ -21,9 +21,19 @@ namespace AspNetCoreWebApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<Product> Get(string sortPrice)
         {
-            return productsDbContext.Products;
+            IQueryable<Product> products = productsDbContext.Products;
+            switch (sortPrice)
+            {
+                case "desc":
+                    products = products.OrderByDescending(p => p.ProductPrice);
+                    break;
+                case "asc":
+                    products = products.OrderBy(p => p.ProductPrice);
+                    break;
+            }
+            return products;
         }
 
         // GET: api/Products/5
