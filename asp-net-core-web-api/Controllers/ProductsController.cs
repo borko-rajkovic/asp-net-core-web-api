@@ -21,8 +21,11 @@ namespace AspNetCoreWebApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public IEnumerable<Product> Get(string sortPrice)
+        public IEnumerable<Product> Get(string sortPrice, int? pageNumber, int? pageSize)
         {
+            int currentPage = pageNumber ?? 1;
+            int currentPageSize = pageSize ?? 1;
+
             IQueryable<Product> products = productsDbContext.Products;
             switch (sortPrice)
             {
@@ -33,7 +36,10 @@ namespace AspNetCoreWebApi.Controllers
                     products = products.OrderBy(p => p.ProductPrice);
                     break;
             }
-            return products;
+
+            var items = products.Skip((currentPage - 1) * currentPageSize).Take(currentPageSize).ToList();
+
+            return items;
         }
 
         // GET: api/Products/5
