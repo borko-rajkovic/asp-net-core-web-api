@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AspNetCoreWebApi.Data;
 using AspNetCoreWebApi.Models;
+using AspNetCoreWebApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,11 @@ namespace AspNetCoreWebApi.Controllers
     [Route("api/Products")]
     public class ProductsController : Controller
     {
-        private ProductsDbContext productsDbContext;
+        private IProduct productRepository;
 
-        public ProductsController(ProductsDbContext _productsDbContext)
+        public ProductsController(IProduct _productRepository)
         {
-            productsDbContext = _productsDbContext;
+            productRepository = _productRepository;
         }
 
         // GET: api/Products
@@ -26,7 +27,7 @@ namespace AspNetCoreWebApi.Controllers
             int currentPage = pageNumber ?? 1;
             int currentPageSize = pageSize ?? 1;
 
-            IQueryable<Product> products = productsDbContext.Products;
+            IQueryable<Product> products = productRepository.GetProducts();
 
             if(!String.IsNullOrWhiteSpace(searchProduct))
                 products = products.Where(p => p.ProductName.StartsWith(searchProduct));
@@ -48,18 +49,18 @@ namespace AspNetCoreWebApi.Controllers
         }
 
         // GET: api/Products/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public IActionResult Get(int id)
-        //{
-        //    var product = productsDbContext.Products.SingleOrDefault(m => m.ProductId == id);
-        //    if (product == null)
-        //    {
-        //        return NotFound("No record found");
-        //    }
+        [HttpGet("{id}", Name = "Get")]
+        public IActionResult Get(int id)
+        {
+            var product = productRepository.GetProduct(id);
+            if (product == null)
+            {
+                return NotFound("No record found");
+            }
 
-        //    return Ok(product);
-        //}
-        
+            return Ok(product);
+        }
+
         // POST: api/Products
         [HttpPost]
         public IActionResult Post([FromBody]Product product)
@@ -69,8 +70,7 @@ namespace AspNetCoreWebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            productsDbContext.Products.Add(product);
-            productsDbContext.SaveChanges(true);
+            productRepository.AddProduct(product);
 
             return StatusCode(StatusCodes.Status201Created);
         }
@@ -91,8 +91,7 @@ namespace AspNetCoreWebApi.Controllers
 
             try
             {
-                productsDbContext.Products.Update(product);
-                productsDbContext.SaveChanges(true);
+                productRepository.UpdateProduct(product);
             }
             catch(Exception e)
             {
@@ -108,15 +107,8 @@ namespace AspNetCoreWebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var product = productsDbContext.Products.SingleOrDefault(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound("No record found");
-            }
 
-            productsDbContext.Products.Remove(product);
-            productsDbContext.SaveChanges(true);
-
+            productRepository.DeleteProduct(id);
             return Ok("Product Deleted");
         }
     }

@@ -1,6 +1,8 @@
 ﻿using AspNetCoreWebApi.Data;
+using AspNetCoreWebApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,8 @@ namespace AspNetCoreWebApi
         {
             services.AddMvc().AddXmlSerializerFormatters();
             services.AddDbContext<ProductsDbContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ProductsDB;"));
-            services.AddApiVersioning();
+            //services.AddApiVersioning(o => o.ApiVersionReader = new MediaTypeApiVersionReader());
+            services.AddScoped<IProduct, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
