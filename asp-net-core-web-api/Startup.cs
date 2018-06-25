@@ -14,7 +14,6 @@ namespace AspNetCoreWebApi
     {
         // TODO Controller wit Entity Framework
         // TODO ASP.NET Core with React and Redux
-        // TODO Local DB send to github
         // TODO Swagger
 
         public Startup(IConfiguration configuration)
@@ -41,6 +40,9 @@ namespace AspNetCoreWebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseDeveloperExceptionPage();
+            app.UseStaticFiles();
 
             app.UseSwagger();
             app.UseSwaggerUI(c=>c.SwaggerEndpoint("/swagger/v1/swagger.json", "API for Products"));
