@@ -14,7 +14,6 @@ namespace AspNetCoreWebApi
     {
         // TODO Controller wit Entity Framework
         // TODO ASP.NET Core with React and Redux
-        // TODO Swagger
 
         public Startup(IConfiguration configuration)
         {
