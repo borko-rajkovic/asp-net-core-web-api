@@ -25,7 +25,7 @@ namespace AspNetCoreWebApi.Controllers
         public IEnumerable<Product> Get(string sortPrice, int? pageNumber, int? pageSize, string searchProduct)
         {
             int currentPage = pageNumber ?? 1;
-            int currentPageSize = pageSize ?? 1;
+            int currentPageSize = pageSize ?? 10;
 
             IQueryable<Product> products = productRepository.GetProducts();
 
