@@ -21,12 +21,16 @@ namespace AspNetCoreWebApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public IEnumerable<Product> Get(string sortPrice, int? pageNumber, int? pageSize)
+        public IEnumerable<Product> Get(string sortPrice, int? pageNumber, int? pageSize, string searchProduct)
         {
             int currentPage = pageNumber ?? 1;
             int currentPageSize = pageSize ?? 1;
 
             IQueryable<Product> products = productsDbContext.Products;
+
+            if(!String.IsNullOrWhiteSpace(searchProduct))
+                products = products.Where(p => p.ProductName.StartsWith(searchProduct));
+
             switch (sortPrice)
             {
                 case "desc":
@@ -39,21 +43,22 @@ namespace AspNetCoreWebApi.Controllers
 
             var items = products.Skip((currentPage - 1) * currentPageSize).Take(currentPageSize).ToList();
 
+
             return items;
         }
 
         // GET: api/Products/5
-        [HttpGet("{id}", Name = "Get")]
-        public IActionResult Get(int id)
-        {
-            var product = productsDbContext.Products.SingleOrDefault(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound("No record found");
-            }
+        //[HttpGet("{id}", Name = "Get")]
+        //public IActionResult Get(int id)
+        //{
+        //    var product = productsDbContext.Products.SingleOrDefault(m => m.ProductId == id);
+        //    if (product == null)
+        //    {
+        //        return NotFound("No record found");
+        //    }
 
-            return Ok(product);
-        }
+        //    return Ok(product);
+        //}
         
         // POST: api/Products
         [HttpPost]
