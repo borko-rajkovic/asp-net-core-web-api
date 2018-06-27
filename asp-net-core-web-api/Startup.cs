@@ -12,7 +12,6 @@ namespace AspNetCoreWebApi
 {
     public class Startup
     {
-        // TODO Controller wit Entity Framework
         // TODO ASP.NET Core with React and Redux
 
         public Startup(IConfiguration configuration)
